@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+    <title>简易L2D</title>
+    <style>
+    #image-container {
+        position: relative;
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        overflow: hidden;
+        float:left;
+    }
+    .image-wrapper {
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .image-controls {
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(169, 213, 253, 0.881);
+        border-radius: 5%;
+        padding: 10px;
+        margin-top:15px;
+    }
+    .image-controls input {
+        margin: 5px;
+    }
+    .controls-container{
+        float:right;
+        width:350px;
+        height:500px;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    </style>
+</head>
+<body>
+    <div style="display:flex;justify-content: space-between;" data-depth="0.1">
+        <div id="image-container">
+        </div>
+        <div id="controls-container" class="controls-container">
+            <div>
+                <input type="file" id="file-input" style="height:50px;">
+                <div >
+                    <label>
+                        <div>画布宽度:</div>
+                        <input type="range" id="container-width" min="100" max="1000" value="500">
+                        <input type="number" id="container-width-num" min="100" max="1000" value="500">
+                    </label>
+                </div>
+                <div >
+                    <label>
+                        <div>画布高度:</div>
+                        <input type="range" id="container-height" min="100" max="1000" value="500">
+                        <input type="number" id="container-height-num" min="100" max="1000" value="500">
+                    </label>
+                </div>
+            </div>
+            <div id="image-controls-container" style="overflow-y: scroll;">
+            </div>
+        </div>
+    </div>
+    <script>
+    const fileInput = document.getElementById('file-input');
+    const imageContainer = document.getElementById('image-container');
+    const controlsContainer = document.getElementById('image-controls-container');
+
+    const parallaxInstance = new Parallax(imageContainer, {
+        relativeInput: true, //默认值：false 使鼠标相对于场景元素的位置输入。
+        clipRelativeInput: true, //默认值：false 将鼠标输入剪切到场景的边界。这意味着一旦光标到达场景元素的边缘，移动就会停止。
+        hoverOnly:true //默认值：false 视差仅在光标位于场景元素上方时才有效，否则所有图层将移回到其初始位置。
+
+    });
+    let imageCount = 0;
+
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.addEventListener('load', () => {
+        const image = new Image();
+        image.src = reader.result;
+        const div = document.createElement('div');
+        div.classList.add('image-wrapper');
+        div.appendChild(image);
+        div.setAttribute('data-depth', '0.7');
+        imageContainer.appendChild(div);
+        imageCount++;
+        const controlDiv = document.createElement('div');
+        controlDiv.classList.add('image-controls');
+        controlsContainer.appendChild(controlDiv);
+
+        const xRange = document.createElement('input');
+        xRange.type = 'range';
+        xRange.min = '-2000';
+        xRange.max = '2000';
+        xRange.value = '0';
+        xRange.addEventListener('input', () => {
+            div.style.left = xRange.value + 'px';
+            x = xRange.value;
+            xInput.value = x;
+        });
+        const xInput = document.createElement('input');
+        xInput.type = 'number';
+        xInput.min = '-2000';
+        xInput.max = '2000';
+        xInput.value = '0';
+        xInput.addEventListener('input', () => {
+            x = xInput.value;
+            xRange.value = x;
+            div.style.left = x + 'px';
+        });
+
+        const yRange = document.createElement('input');
+        yRange.type = 'range';
+        yRange.min = '-2000';
+        yRange.max = '2000';
+        yRange.value = '0';
+        yRange.addEventListener('input', () => {
+            div.style.top = yRange.value + 'px';
+            y = yRange.value;
+            yInput.value = y;
+        });
+        const yInput = document.createElement('input');
+        yInput.type = 'number';
+        yInput.min = -2000;
+        yInput.max = 2000;
+        yInput.value = 0;
+        yInput.addEventListener('input', () => {
+        y = yInput.value;
+        yRange.value = y;
+        div.style.top = y + 'px';
+        });
+        const zRange = document.createElement('input');
+        zRange.type = 'number';
+        zRange.min = 0;
+        zRange.max = 100;
+        zRange.value = 0;
+        zRange.addEventListener('input', () => {
+            div.style.zIndex = zRange.value;
+        });
+        const scaleRange = document.createElement('input');
+        scaleRange.type = 'range';
+        scaleRange.min = 0.05;
+        scaleRange.max = 3;
+        scaleRange.step = 0.05;
+        scaleRange.value = 1;
+        scaleRange.addEventListener('input', () => {
+            scale = scaleRange.value;
+            scaleInput.value = scale;
+            div.style.transform = `scale(${scale})`;
+        });
+        const scaleInput = document.createElement('input');
+        scaleInput.type = 'number';
+        scaleInput.min = 0.05;
+        scaleInput.max = 3;
+        scaleInput.step = 0.05;
+        scaleInput.value = 1;
+        scaleInput.addEventListener('input', () => {
+            scale = scaleInput.value;
+            scaleRange.value = scale;
+            div.style.transform = `scale(${scale})`;
+        });
+
+        const LayerInput = document.createElement('input');
+        LayerInput.type = 'number';
+        LayerInput.min = 0;
+        LayerInput.max = 10;
+        LayerInput.step = 0.01;
+        LayerInput.value = 0.5;
+        LayerInput.addEventListener('input', () => {
+            depth = LayerInput.value;
+            div.setAttribute('data-depth', depth);
+            const imageWrappers = document.querySelectorAll('.image-wrapper');
+
+            // 储存所有元素的top和left值的数组
+            const positions = [];
+
+            // 遍历所有元素，获取它们的top和left值，并存储到数组中
+            imageWrappers.forEach((element) => {
+            const position = {
+                top: element.style.top,
+                left: element.style.left,
+            };
+            positions.push(position);
+            });
+
+            // 调用parallaxInstance.updateLayers()更新视差效果
+            parallaxInstance.updateLayers();
+
+            // 遍历所有元素，将之前存储的top和left值重新赋值给它们的style属性
+            imageWrappers.forEach((element, index) => {
+            element.style.top = positions[index].top;
+            element.style.left = positions[index].left;
+            });
+        });
+
+        const Sizediv = document.createElement('div');
+        Sizediv.innerText = '图片大小:'
+        
+        const Widthdiv = document.createElement('div');
+        Widthdiv.innerText = '横向位置:'
+
+        const Heightdiv = document.createElement('div');
+        Heightdiv.innerText = '纵向位置:'
+
+        const ImageTitle = document.createElement('div');
+        ImageTitle.innerText = file.name;
+        controlDiv.appendChild(ImageTitle);
+
+        const sizeLabel = document.createElement('label');
+        sizeLabel.appendChild(Sizediv);
+        sizeLabel.appendChild(scaleRange);
+        sizeLabel.appendChild(scaleInput);
+        controlDiv.appendChild(sizeLabel);
+
+        const xLabel = document.createElement('label');
+        xLabel.appendChild(Widthdiv);
+        xLabel.appendChild(xRange);
+        xLabel.appendChild(xInput);
+        controlDiv.appendChild(xLabel);
+
+        const yLabel = document.createElement('label');
+        yLabel.appendChild(Heightdiv);
+        yLabel.appendChild(yRange);
+        yLabel.appendChild(yInput);
+        controlDiv.appendChild(yLabel);
+
+        const zLabel = document.createElement('label');
+        zLabel.textContent = '图层高度:'
+        zLabel.appendChild(zRange);
+        controlDiv.appendChild(zLabel);
+
+        const DLabel = document.createElement('label');
+        DLabel.textContent = '位移系数:'
+        DLabel.appendChild(LayerInput);
+        controlDiv.appendChild(DLabel);
+        const imageWrappers = document.querySelectorAll('.image-wrapper');
+
+        // 储存所有元素的top和left值的数组
+        const positions = [];
+
+        // 遍历所有元素，获取它们的top和left值，并存储到数组中
+        imageWrappers.forEach((element) => {
+        const position = {
+            top: element.style.top,
+            left: element.style.left,
+        };
+        positions.push(position);
+        });
+
+        // 调用parallaxInstance.updateLayers()更新视差效果
+        parallaxInstance.updateLayers();
+
+        // 遍历所有元素，将之前存储的top和left值重新赋值给它们的style属性
+        imageWrappers.forEach((element, index) => {
+        element.style.top = positions[index].top;
+        element.style.left = positions[index].left;
+        });
+        div.style.top = 0;
+        div.style.left = 0;
+
+});
+    reader.readAsDataURL(file);
+});
+
+const containerWidth = document.getElementById('container-width');
+const containerHeight = document.getElementById('container-height');
+const containerWidthNum = document.getElementById('container-width-num');
+const containerHeightNum = document.getElementById('container-height-num');
+
+containerWidth.addEventListener('input', () => {
+    w = containerWidth.value ;
+    containerWidthNum.value = w;
+    imageContainer.style.width = containerWidth.value + 'px';
+});
+
+containerHeight.addEventListener('input', () => {
+    h = containerHeight.value;
+    containerHeightNum.value = h;
+    imageContainer.style.height = containerHeight.value + 'px';
+});
+containerWidthNum.addEventListener('input', () => {
+    w = containerWidthNum.value;
+    containerWidth.value = w;
+    imageContainer.style.width = containerWidthNum.value + 'px';
+});
+containerHeightNum.addEventListener('input', () => {
+    h = containerHeightNum.value;
+    containerHeight.value = h;
+    imageContainer.style.height = containerHeightNum.value + 'px';
+});
+</script>
+</body>
+</html>
