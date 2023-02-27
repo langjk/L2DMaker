@@ -15,8 +15,7 @@
     }
     .image-wrapper {
         position: absolute;
-        max-width: 100%;
-        max-height: 100%;
+        width:500px;
     }
     .image-controls {
         display: flex;
@@ -89,8 +88,11 @@
         const div = document.createElement('div');
         div.classList.add('image-wrapper');
         image.style.maxWidth = '100%';
+        image.style.maxHeight = '100%';
+        image.style.width = '100%';
+        image.style.height = '100%';
         div.appendChild(image);
-        div.setAttribute('data-depth', '0.7');
+        div.setAttribute('data-depth', '0.5');
         imageContainer.appendChild(div);
         imageCount++;
         const controlDiv = document.createElement('div');
@@ -99,9 +101,10 @@
 
         const xRange = document.createElement('input');
         xRange.type = 'range';
-        xRange.min = '-2000';
-        xRange.max = '2000';
+        xRange.min = '-1000';
+        xRange.max = '1000';
         xRange.value = '0';
+        xRange.step = 0.5;
         xRange.addEventListener('input', () => {
             div.style.left = xRange.value + 'px';
             x = xRange.value;
@@ -109,9 +112,10 @@
         });
         const xInput = document.createElement('input');
         xInput.type = 'number';
-        xInput.min = '-2000';
-        xInput.max = '2000';
+        xInput.min = '-1000';
+        xInput.max = '1000';
         xInput.value = '0';
+        xInput.step = 0.5;
         xInput.addEventListener('input', () => {
             x = xInput.value;
             xRange.value = x;
@@ -120,8 +124,9 @@
 
         const yRange = document.createElement('input');
         yRange.type = 'range';
-        yRange.min = '-2000';
-        yRange.max = '2000';
+        yRange.min = '-1000';
+        yRange.max = '1000';
+        yRange.step = 0.5;
         yRange.value = '0';
         yRange.addEventListener('input', () => {
             div.style.top = yRange.value + 'px';
@@ -133,6 +138,7 @@
         yInput.min = -2000;
         yInput.max = 2000;
         yInput.value = 0;
+        yInput.step = 0.5;
         yInput.addEventListener('input', () => {
         y = yInput.value;
         yRange.value = y;
@@ -155,7 +161,7 @@
         scaleRange.addEventListener('input', () => {
             scale = scaleRange.value;
             scaleInput.value = scale;
-            div.style.width = 100 * scale + '%';
+            div.style.width = 500 * scale + 'px';
         });
         const scaleInput = document.createElement('input');
         scaleInput.type = 'number';
@@ -166,7 +172,7 @@
         scaleInput.addEventListener('input', () => {
             scale = scaleInput.value;
             scaleRange.value = scale;
-            div.style.width = 100 * scale + '%';
+            div.style.width = 500 * scale + 'px';
         });
 
         const LayerInput = document.createElement('input');
