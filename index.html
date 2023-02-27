@@ -88,6 +88,7 @@
         image.src = reader.result;
         const div = document.createElement('div');
         div.classList.add('image-wrapper');
+        image.style.maxWidth = '100%';
         div.appendChild(image);
         div.setAttribute('data-depth', '0.7');
         imageContainer.appendChild(div);
@@ -154,7 +155,7 @@
         scaleRange.addEventListener('input', () => {
             scale = scaleRange.value;
             scaleInput.value = scale;
-            div.style.transform = `scale(${scale})`;
+            div.style.width = 100 * scale + '%';
         });
         const scaleInput = document.createElement('input');
         scaleInput.type = 'number';
@@ -165,7 +166,7 @@
         scaleInput.addEventListener('input', () => {
             scale = scaleInput.value;
             scaleRange.value = scale;
-            div.style.transform = `scale(${scale})`;
+            div.style.width = 100 * scale + '%';
         });
 
         const LayerInput = document.createElement('input');
