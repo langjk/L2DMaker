@@ -36,7 +36,10 @@
         display: flex;
         flex-direction: column;
     }
-    
+    @keyframes DivAnimation{
+        0% {transform: rotate(0deg);}
+        100% {transform: rotate(360deg);}
+    }
     </style>
 </head>
 <body>
@@ -77,7 +80,7 @@
 
     });
     let imageCount = 0;
-
+    
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -91,7 +94,18 @@
         image.style.maxHeight = '100%';
         image.style.width = '100%';
         image.style.height = '100%';
+        image.style.position = 'relative';
+
+        const CirCentre = document.createElement('div');
+        CirCentre.style.backgroundColor = 'red';
+        CirCentre.style.borderRadius = '50%';
+        CirCentre.style.display = 'none';
+        CirCentre.style.width = '20px';
+        CirCentre.style.height = '20px';
+        CirCentre.style.position = 'absolute';
+
         div.appendChild(image);
+        div.appendChild(CirCentre);
         div.setAttribute('data-depth', '0.5');
         imageContainer.appendChild(div);
         imageCount++;
@@ -207,6 +221,109 @@
             element.style.left = positions[index].left;
             });
         });
+        
+        const Animation = document.createElement('button');
+        Animation.innerText = '添加动画';
+        Animation.addEventListener("click",function(){
+            CirCentre.style.marginLeft = div.clientWidth/2 - 10 + 'px';
+            CirCentre.style.marginTop = div.clientHeight/2 - div.clientHeight + 10 + 'px';
+            image.style.animation="DivAnimation 3s "
+            image.style.animationPlayState == "running"
+            controlDiv.appendChild(AnimationLabel);
+        })
+        
+        const ShowPoint = document.createElement('input')
+        ShowPoint.type = 'checkbox';
+        ShowPoint.addEventListener('change',()=>{
+            if(ShowPoint.checked){
+                CirCentre.style.display = 'block';
+            }
+            else {
+                CirCentre.style.display = 'none';
+            }
+        })
+
+        const AnimationX = document.createElement('input');
+        AnimationX.type = 'number';
+        AnimationX.min = 0;
+        AnimationX.max = div.clientWidth;
+        AnimationX.step = 0.05;
+        AnimationX.value = div.clientWidth/2;
+        AnimationX.addEventListener('input', () => {
+            AX = AnimationX.value;
+            AnimationRangeX.value = AX;
+            AStyle = getComputedStyle(image);
+            AXY = AStyle.getPropertyValue('transform-origin');
+            AY = AXY.split(' ')[1];
+            CirCentre.style.marginLeft = AX - 10 + 'px'
+            image.style.transformOrigin = AX + 'px ' + AY;
+
+        });
+        
+        const AnimationRangeX = document.createElement('input');
+        AnimationRangeX.type = 'range';
+        AnimationRangeX.min = 0;
+        AnimationRangeX.max = div.clientWidth;
+        AnimationRangeX.step = 0.05;
+        AnimationRangeX.value = div.clientWidth/2;
+        AnimationRangeX.addEventListener('input', () => {
+            AX = AnimationRangeX.value;
+            AnimationX.value = AX;
+            AStyle = getComputedStyle(image);
+            AXY = AStyle.getPropertyValue('transform-origin');
+            AY = AXY.split(' ')[1];
+            CirCentre.style.marginLeft = AX - 10 + 'px'
+            image.style.transformOrigin = AX + 'px ' + AY;
+
+        });
+
+        const AnimationY = document.createElement('input');
+        AnimationY.type = 'number';
+        AnimationY.min = 0;
+        AnimationY.max = div.clientHeight;
+        AnimationY.step = 0.05;
+        AnimationY.value = div.clientHeight/2;
+        AnimationY.addEventListener('input', () => {
+            AY = AnimationY.value;
+            AnimationRangeY.value = AY;
+            AStyle = getComputedStyle(image);
+            AXY = AStyle.getPropertyValue('transform-origin');
+            AX = AXY.split(' ')[0];
+            CirCentre.style.marginTop = AY - div.clientHeight + 10 + 'px'
+            image.style.transformOrigin = AX +' '+ AY + 'px';
+
+        });
+
+        const AnimationRangeY = document.createElement('input');
+        AnimationRangeY.type = 'range';
+        AnimationRangeY.min = 0;
+        AnimationRangeY.max = div.clientHeight;
+        AnimationRangeY.step = 0.05;
+        AnimationRangeY.value = div.clientHeight/2;
+        AnimationRangeY.addEventListener('input', () => {
+            AY = AnimationRangeY.value;
+            AnimationY.value = AY;
+            AStyle = getComputedStyle(image);
+            AXY = AStyle.getPropertyValue('transform-origin');
+            AX = AXY.split(' ')[0];
+            CirCentre.style.marginTop = AY - div.clientHeight + 10 + 'px'
+            image.style.transformOrigin = AX +' '+ AY + 'px';
+
+        });
+
+		image.addEventListener("animationend", function() {
+			image.style.animation = "none";
+		});
+
+        document.addEventListener("keydown", function(event) {
+					if (event.key === "m" || event.key === "M") {
+                        console.log(image.style.animation)
+						if(image.style.animation == "0s ease 0s 1 normal none running none"){
+                            image.style.animation="DivAnimation 3s "
+                            image.style.animationPlayState == "running"
+                        }
+		}});
+
 
         const Sizediv = document.createElement('div');
         Sizediv.innerText = '图片大小:'
@@ -220,6 +337,19 @@
         const ImageTitle = document.createElement('div');
         ImageTitle.innerText = file.name;
         controlDiv.appendChild(ImageTitle);
+
+        const AnimationDiv = document.createElement('div');
+        AnimationDiv.innerText = '动画参数:'
+        
+        const CheckDiv = document.createElement('div');
+        CheckDiv.innerText = '是否显示圆心:'
+        CheckDiv.appendChild(ShowPoint);
+
+        const AnimationXLabel = document.createElement('div');
+        AnimationXLabel.innerText = '横向旋转圆心位置:'
+
+        const AnimationYLabel = document.createElement('div');
+        AnimationYLabel.innerText = '纵向旋转圆心位置:'
 
         const sizeLabel = document.createElement('label');
         sizeLabel.appendChild(Sizediv);
@@ -250,6 +380,18 @@
         controlDiv.appendChild(DLabel);
         const imageWrappers = document.querySelectorAll('.image-wrapper');
 
+        
+        const AnimationLabel = document.createElement('label');
+        AnimationLabel.appendChild(AnimationDiv);
+        AnimationLabel.appendChild(CheckDiv);
+        AnimationLabel.appendChild(AnimationXLabel);
+        AnimationLabel.appendChild(AnimationX);
+        AnimationLabel.appendChild(AnimationRangeX);
+        AnimationLabel.appendChild(AnimationYLabel);
+        AnimationLabel.appendChild(AnimationY);
+        AnimationLabel.appendChild(AnimationRangeY);
+
+        controlDiv.appendChild(Animation)
         // 储存所有元素的top和left值的数组
         const positions = [];
 
