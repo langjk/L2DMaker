@@ -107,6 +107,7 @@
         div.appendChild(image);
         div.appendChild(CirCentre);
         div.setAttribute('data-depth', '0.5');
+        
         imageContainer.appendChild(div);
         imageCount++;
         const controlDiv = document.createElement('div');
@@ -222,12 +223,16 @@
             });
         });
         
-        var X = div.clientWeight;
+        var X = div.clientWidth;
         var Y = div.clientHeight;
-
         const Animation = document.createElement('button');
         Animation.innerText = '添加动画';
         Animation.addEventListener("click",function(){
+            Y = div.clientHeight;
+            AnimationRangeY.max = Y;
+            AnimationY.max = Y;
+            AnimationY.value = Y/2;
+            AnimationRangeY.value = Y/2;
             CirCentre.style.marginLeft = X/2 - 10 + 'px';
             CirCentre.style.marginTop = Y/2 - Y + 10 + 'px';
             image.style.animation="DivAnimation 3s "
