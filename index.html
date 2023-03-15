@@ -222,11 +222,14 @@
             });
         });
         
+        var X = div.clientWeight;
+        var Y = div.clientHeight;
+
         const Animation = document.createElement('button');
         Animation.innerText = '添加动画';
         Animation.addEventListener("click",function(){
-            CirCentre.style.marginLeft = div.clientWidth/2 - 10 + 'px';
-            CirCentre.style.marginTop = div.clientHeight/2 - div.clientHeight + 10 + 'px';
+            CirCentre.style.marginLeft = X/2 - 10 + 'px';
+            CirCentre.style.marginTop = Y/2 - Y + 10 + 'px';
             image.style.animation="DivAnimation 3s "
             image.style.animationPlayState == "running"
             controlDiv.appendChild(AnimationLabel);
@@ -242,6 +245,7 @@
                 CirCentre.style.display = 'none';
             }
         })
+
 
         const AnimationX = document.createElement('input');
         AnimationX.type = 'number';
@@ -277,19 +281,20 @@
 
         });
 
+
         const AnimationY = document.createElement('input');
         AnimationY.type = 'number';
         AnimationY.min = 0;
-        AnimationY.max = div.clientHeight;
+        AnimationY.max = Y;
         AnimationY.step = 0.05;
-        AnimationY.value = div.clientHeight/2;
+        AnimationY.value = Y/2;
         AnimationY.addEventListener('input', () => {
             AY = AnimationY.value;
             AnimationRangeY.value = AY;
             AStyle = getComputedStyle(image);
             AXY = AStyle.getPropertyValue('transform-origin');
             AX = AXY.split(' ')[0];
-            CirCentre.style.marginTop = AY - div.clientHeight + 10 + 'px'
+            CirCentre.style.marginTop = AY - Y + 10 + 'px'
             image.style.transformOrigin = AX +' '+ AY + 'px';
 
         });
@@ -297,16 +302,16 @@
         const AnimationRangeY = document.createElement('input');
         AnimationRangeY.type = 'range';
         AnimationRangeY.min = 0;
-        AnimationRangeY.max = div.clientHeight;
+        AnimationRangeY.max = Y;
         AnimationRangeY.step = 0.05;
-        AnimationRangeY.value = div.clientHeight/2;
+        AnimationRangeY.value = Y/2;
         AnimationRangeY.addEventListener('input', () => {
             AY = AnimationRangeY.value;
             AnimationY.value = AY;
             AStyle = getComputedStyle(image);
             AXY = AStyle.getPropertyValue('transform-origin');
             AX = AXY.split(' ')[0];
-            CirCentre.style.marginTop = AY - div.clientHeight + 10 + 'px'
+            CirCentre.style.marginTop = AY - Y + 10 + 'px'
             image.style.transformOrigin = AX +' '+ AY + 'px';
 
         });
